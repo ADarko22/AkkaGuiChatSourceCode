@@ -13,17 +13,14 @@ public class RemoteChatServiceActor extends UntypedActor {
   private GuiServer chat;
   private HashMap <ActorRef,String> users;
   private Messages messages;
-        
+  
+  /*constructor*/
   public RemoteChatServiceActor(GuiServer chat) {
     this.chat = chat;
     messages = new Messages();
     users = new HashMap<>();
   }
-
-  private void writeToLog(String logMessage) {
-      this.chat.getLog().setText(this.chat.getLog().getText()+logMessage+"\n");
-  }
-        
+  /*Server Behaviour*/
   @Override
   public void onReceive(Object message) {
       
@@ -47,7 +44,11 @@ public class RemoteChatServiceActor extends UntypedActor {
                         
       }
   }
-
+  /*update the log text-area*/
+  private void writeToLog(String logMessage) {
+      this.chat.getLog().setText(this.chat.getLog().getText()+logMessage+"\n");
+  }
+  
   private void handleLoginMessage(Object message) {
           writeToLog("ok");
   }
@@ -64,6 +65,7 @@ getSender().tell(toPrint, getSelf());
 		  ref.tell(toPrint, getSelf());      
   }
   
+  /*_____STRAT the CHAT SERVER_____*/
   public static void main(String[] args) {
 
     GuiServer frame = new GuiServer();
@@ -77,7 +79,5 @@ getSender().tell(toPrint, getSelf());
 
     frame.setActorReference(remoteActor);
     frame.printBootstrapMessage();
-  }
-
-   
+  }   
 }
