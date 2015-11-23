@@ -54,11 +54,11 @@ public class RemoteChatServiceActor extends UntypedActor {
   
   private void handleChatMessage(Object message){
 	    
-	  writeToLog(users.get(getSender())+" writes:\n"+((Messages.ChatMessage)message).getContent());
+	  writeToLog(users.get(getSender())+" writes a message");
 	  
-	  Messages.ToPrintMessage toPrint = messages.new ToPrintMessage(users.get(getSender())+":\n"+((Messages.ChatMessage)message).getContent());
-	  //test
-	  getSender().tell(toPrint, getSelf());
+	  Messages.ToPrintMessage toPrint = messages.new ToPrintMessage(users.get(getSender())+":\n"+((Messages.ChatMessage)message).getContent().trim());
+//test
+getSender().tell(toPrint, getSelf());
 	  
 	  for(ActorRef ref : users.keySet())
 		  ref.tell(toPrint, getSelf());      
