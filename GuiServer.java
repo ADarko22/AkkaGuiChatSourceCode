@@ -37,7 +37,7 @@ public class GuiServer extends JFrame {
 	public void setActorReference(ActorRef serverActor) {
 	    this.serverActor = serverActor;
 	}
-
+	/*constructor: build in the gui*/
 	public GuiServer() {
 		messages = new Messages();
 		
