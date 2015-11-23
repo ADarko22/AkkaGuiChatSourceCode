@@ -34,18 +34,19 @@ public class GuiChat extends JFrame {
 	private JTextField username;
 	private JLabel lblOnlineUsers;
 	private JButton btnLogin;
+	private JButton btnDisconnect;
 	private JScrollPane scrollPane;
-	private JTextArea textAreaMessages;
+	private JTextArea room;
 	private JScrollPane scrollPane_1;
-	private JTextArea textAreaOnlineUsers;
+	private JTextArea usersList;
 	private JScrollPane scrollPane_2;
-	private JTextArea textAreaInputMessages;
-	private JButton btnNewButton;
+	private JTextArea clientInput;
+	private JButton btnSend;
 	private ActorRef communicator;
 	private Messages messages;
 
-	public JTextArea getTextAreaMessages () {
-		return this.textAreaMessages;
+	public JTextArea getRoom () {
+		return this.room;
 	}
 
 	public void setActorReference(ActorRef communicator) {
@@ -83,7 +84,9 @@ public class GuiChat extends JFrame {
 
 				btnLogin.setEnabled(false);
 				username.setEnabled(false);
-				communicator.tell(messages.new Altro("ciao"),null);
+				clientInput.setEnabled(true);
+				btnSend.setEnabled(true);
+				communicator.tell(messages.new LoginMessage(username.getText()),null);
 			}
 
 		});
@@ -91,13 +94,16 @@ public class GuiChat extends JFrame {
 		contentPane.add(username);
 		username.setColumns(10);
 		
-		JButton btnDisconnect = new JButton("Disconnect");
+		btnDisconnect = new JButton("Disconnect");
 		btnDisconnect.setForeground(new Color(255, 69, 0));
 		sl_contentPane.putConstraint(SpringLayout.NORTH, btnDisconnect, 12, SpringLayout.NORTH, contentPane);
 		sl_contentPane.putConstraint(SpringLayout.WEST, btnDisconnect, 332, SpringLayout.WEST, contentPane);
 		btnDisconnect.setFont(new Font("Yu Gothic UI Semilight", Font.BOLD, 14));
 		btnDisconnect.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
+				
+				clientInput.setEnabled(false);
+				btnSend.setEnabled(false);
 			}
 		});
 		contentPane.add(btnDisconnect);
@@ -115,6 +121,9 @@ public class GuiChat extends JFrame {
 		sl_contentPane.putConstraint(SpringLayout.EAST, btnLogin, -6, SpringLayout.WEST, btnDisconnect);
 		btnLogin.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				
+				clientInput.setEnabled(true);
+				btnSend.setEnabled(true);
 			}
 		});
 		btnLogin.setFont(new Font("Yu Gothic UI Semilight", Font.BOLD, 14));
@@ -127,10 +136,10 @@ public class GuiChat extends JFrame {
 		sl_contentPane.putConstraint(SpringLayout.EAST, scrollPane, -146, SpringLayout.EAST, contentPane);
 		contentPane.add(scrollPane);
 		
-		textAreaMessages = new JTextArea("");
-		textAreaMessages.setEditable(false);
-		textAreaMessages.setFont(new Font("Yu Gothic UI Semilight", Font.PLAIN, 15));
-		scrollPane.setViewportView(textAreaMessages);
+		room = new JTextArea("");
+		room.setEditable(false);
+		room.setFont(new Font("Yu Gothic UI Semilight", Font.PLAIN, 15));
+		scrollPane.setViewportView(room);
 		
 		scrollPane_1 = new JScrollPane();
 		sl_contentPane.putConstraint(SpringLayout.SOUTH, lblOnlineUsers, -1, SpringLayout.NORTH, scrollPane_1);
@@ -140,10 +149,10 @@ public class GuiChat extends JFrame {
 		sl_contentPane.putConstraint(SpringLayout.EAST, scrollPane_1, -10, SpringLayout.EAST, contentPane);
 		contentPane.add(scrollPane_1);
 		
-		textAreaOnlineUsers = new JTextArea("");
-		textAreaOnlineUsers.setEditable(false);
-		textAreaOnlineUsers.setFont(new Font("Yu Gothic UI Semilight", Font.BOLD, 13));
-		scrollPane_1.setViewportView(textAreaOnlineUsers);
+		usersList = new JTextArea("");
+		usersList.setEditable(false);
+		usersList.setFont(new Font("Yu Gothic UI Semilight", Font.BOLD, 13));
+		scrollPane_1.setViewportView(usersList);
 		
 		scrollPane_2 = new JScrollPane();
 		sl_contentPane.putConstraint(SpringLayout.NORTH, scrollPane_2, 6, SpringLayout.SOUTH, scrollPane);
@@ -152,22 +161,28 @@ public class GuiChat extends JFrame {
 		sl_contentPane.putConstraint(SpringLayout.EAST, scrollPane_2, -227, SpringLayout.EAST, contentPane);
 		contentPane.add(scrollPane_2);
 		
-		textAreaInputMessages = new JTextArea("");
-		textAreaInputMessages.setFont(new Font("Yu Gothic UI Semilight", Font.PLAIN, 14));
-		scrollPane_2.setViewportView(textAreaInputMessages);
+		clientInput = new JTextArea("");
+		clientInput.setFont(new Font("Yu Gothic UI Semilight", Font.PLAIN, 14));
+		scrollPane_2.setViewportView(clientInput);
+		//textAreaInput
+		clientInput.setEnabled(false);
+
 		
-		btnNewButton = new JButton("Send");
-		sl_contentPane.putConstraint(SpringLayout.WEST, btnNewButton, 6, SpringLayout.EAST, scrollPane_2);
-		sl_contentPane.putConstraint(SpringLayout.SOUTH, btnNewButton, 0, SpringLayout.SOUTH, scrollPane_1);
-		btnNewButton.setForeground(new Color(50, 205, 50));
-		btnNewButton.setFont(new Font("Yu Gothic UI Semilight", Font.BOLD, 13));
-		btnNewButton.addActionListener(new ActionListener() {
+		btnSend = new JButton("Send");
+		sl_contentPane.putConstraint(SpringLayout.WEST, btnSend, 6, SpringLayout.EAST, scrollPane_2);
+		sl_contentPane.putConstraint(SpringLayout.SOUTH, btnSend, 0, SpringLayout.SOUTH, scrollPane_1);
+		btnSend.setForeground(new Color(50, 205, 50));
+		btnSend.setFont(new Font("Yu Gothic UI Semilight", Font.BOLD, 13));
+		btnSend.setEnabled(false);
+		btnSend.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
+				communicator.tell( messages.new ChatMessage(clientInput.getText()) , null);
+				clientInput.setText("");
 			}
 		});
-		sl_contentPane.putConstraint(SpringLayout.NORTH, btnNewButton, 6, SpringLayout.SOUTH, scrollPane);
-		sl_contentPane.putConstraint(SpringLayout.EAST, btnNewButton, 0, SpringLayout.EAST, scrollPane);
-		contentPane.add(btnNewButton);
+		sl_contentPane.putConstraint(SpringLayout.NORTH, btnSend, 6, SpringLayout.SOUTH, scrollPane);
+		sl_contentPane.putConstraint(SpringLayout.EAST, btnSend, 0, SpringLayout.EAST, scrollPane);
+		contentPane.add(btnSend);
 	}
 }
 

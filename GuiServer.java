@@ -22,25 +22,22 @@ import akka.actor.ActorRef;
 public class GuiServer extends JFrame {
 
 	private JPanel contentPane;
-	private JTextArea textAreaServerOperations;
+	private JTextArea log;
 	private ActorRef serverActor;
 	private Messages messages;
 
 	public void printBootstrapMessage() {
-		textAreaServerOperations.setText("CHAT SERVICE HAS BEEN SUCCESSUFULY STARTED\n");
+		log.setText("CHAT SERVICE HAS BEEN SUCCESSUFULY STARTED\n");
 	}
 
-	public JTextArea getTextAreaMessages () {
-		return this.textAreaServerOperations;
+	public JTextArea getLog() {
+		return this.log;
 	}
 
 	public void setActorReference(ActorRef serverActor) {
 	    this.serverActor = serverActor;
 	}
 
-	/**
-	 * Create the frame.
-	 */
 	public GuiServer() {
 		messages = new Messages();
 		
@@ -66,10 +63,10 @@ public class GuiServer extends JFrame {
 		sl_contentPane.putConstraint(SpringLayout.EAST, scrollPane, -15, SpringLayout.EAST, contentPane);
 		contentPane.add(scrollPane);
 		
-		textAreaServerOperations = new JTextArea();
-		textAreaServerOperations.setEditable(false);
-		textAreaServerOperations.setFont(new Font("Yu Gothic UI Semilight", Font.PLAIN, 15));
-		textAreaServerOperations.setForeground(Color.BLACK);
-		scrollPane.setViewportView(textAreaServerOperations);
+		log = new JTextArea();
+		log.setEditable(false);
+		log.setFont(new Font("Yu Gothic UI Semilight", Font.PLAIN, 15));
+		log.setForeground(Color.BLACK);
+		scrollPane.setViewportView(log);
 	}
 }

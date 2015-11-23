@@ -1,5 +1,5 @@
 package remote;
-
+//....//
 import akka.actor.ActorRef;
 import akka.actor.UntypedActor;
 import akka.actor.ActorSystem;
@@ -25,17 +25,18 @@ import com.typesafe.config.ConfigFactory;
             this.chat = chat;
             this.path = path;
             sendIdentifyRequest();
-
             //chat.getTextAreaMessages().setText("ok\n");
         }
 
         private void sendIdentifyRequest() {
 
             getContext().actorSelection(path).tell(new Identify(path), getSelf());
-
             getContext().system().scheduler().scheduleOnce(Duration.create(3, SECONDS), getSelf(),ReceiveTimeout.getInstance(), getContext().dispatcher(), getSelf());
         }
         
+         private void writeToRoom(String logMessage) {
+            this.chat.getRoom().setText(logMessage);
+        }
         @Override
         public void onReceive(Object message) throws Exception {
             if (message instanceof ActorIdentity) {
@@ -43,44 +44,49 @@ import com.typesafe.config.ConfigFactory;
                 if (remoteActor == null) {
                     System.out.println("Remote actor not available: " + path);
                 } else {
-                     chat.getTextAreaMessages().setText("SUCCESSFULLY CONNECTED TO THE SERVER!!");
+                    writeToRoom("SUCCESSFULLY CONNECTED TO THE SERVER!!");
                     getContext().watch(remoteActor);
                     getContext().become(active, true);
                  }
             } else if (message instanceof ReceiveTimeout) {
                 sendIdentifyRequest();
             } else {
-                chat.getTextAreaMessages().setText("Not ready yet");
+                writeToRoom("Not ready yet");
             }
         }
 
         Procedure<Object> active = new Procedure<Object>() {
         @Override
             public void apply(Object message) {
-                if (message instanceof Terminated) {
-                    chat.getTextAreaMessages().setText("Calculator terminated");
-                    sendIdentifyRequest();
-                    getContext().unbecome();
-                } else if (message instanceof ReceiveTimeout) {
-                    // ignore
-                } else if (message.getClass().getSimpleName().equals("Altro")){
-                       remoteActor.tell(message,getSelf());
-                }else if (message.getClass().getSimpleName().equals("LoginMessage")){
+              
+                switch(message.getClass().getSimpleName()) {
 
-                    remoteActor.tell(message,getSelf());
-                	
-                }else if (message.getClass().getSimpleName().equals("DisconnectMessage")){
-                	
+                    case "Terminated": 
+                            writeToRoom("Calculator terminated");
+                            sendIdentifyRequest();
+                            getContext().unbecome();
+                            break;
+
+                    case "ReceiveTimeout": 
+                            				//ignore
+                             				break;
+
+                    case "Reply": 
+                                    		break;
+                    
+                    case "ChatMessage":
+                    						remoteActor.tell(message, getSelf());
+                                    		break;
+
+                    case "ToPrintMessage": //print the message in the GUI (è meglio usare msgToPrint come private?)
+                        					String msgToPrint = ((Messages.ToPrintMessage)message).getContent();
+						                    writeToRoom(chat.getRoom().getText()+"\n"+msgToPrint);
+						                    break;
+      
+                    default: 
+                           //writeToRoom("Messaggio non riconosciuto!...");
                 }
-                
-                else {
-                    unhandled(message);
-                }
-                /*
-                String content = this.chat.getTextAreaMessages().getText();
-				this.chat.getTextAreaMessages().setText(content+"ok\n");
-               // chat.getTextAreaMessages().setText("ok\n");*/
-            }
+        	}
         };
 
     	public static void main(String[] args) {
