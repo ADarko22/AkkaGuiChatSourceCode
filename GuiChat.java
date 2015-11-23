@@ -84,11 +84,8 @@ public class GuiChat extends JFrame {
 
 				btnLogin.setEnabled(false);
 				username.setEnabled(false);
-<<<<<<< HEAD
 				clientInput.setEnabled(true);
 				btnSend.setEnabled(true);
-=======
->>>>>>> refs/remotes/marianobasile/master
 				communicator.tell(messages.new LoginMessage(username.getText()),null);
 			}
 
@@ -98,10 +95,6 @@ public class GuiChat extends JFrame {
 		username.setColumns(10);
 		
 		btnDisconnect = new JButton("Disconnect");
-<<<<<<< HEAD
-=======
-		btnDisconnect.setEnabled(false);
->>>>>>> refs/remotes/marianobasile/master
 		btnDisconnect.setForeground(new Color(255, 69, 0));
 		sl_contentPane.putConstraint(SpringLayout.NORTH, btnDisconnect, 12, SpringLayout.NORTH, contentPane);
 		sl_contentPane.putConstraint(SpringLayout.WEST, btnDisconnect, 332, SpringLayout.WEST, contentPane);
