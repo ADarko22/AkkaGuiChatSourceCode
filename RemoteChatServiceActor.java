@@ -18,10 +18,22 @@ public class RemoteChatServiceActor extends UntypedActor {
     this.chat = chat;
     messages = new Messages();
     users = new HashMap<>();
+<<<<<<< HEAD
   }
 
   private void writeToLog(String logMessage) {
       this.chat.getLog().setText(this.chat.getLog().getText()+logMessage+"\n");
+=======
+
+    /*
+    for(ActorRef ref : users.keySet())
+        ref.tell(,getSelf());
+    */
+  }
+
+  private void writeToLog(String logMessage) {
+      this.chat.getLog().setText(this.chat.getLog().getText()+logMessage);
+>>>>>>> refs/remotes/marianobasile/master
   }
         
   @Override
@@ -38,7 +50,11 @@ public class RemoteChatServiceActor extends UntypedActor {
                              break;
 
         case "ChatMessage": 
+<<<<<<< HEAD
                             handleChatMessage(message); 
+=======
+                            //handleChatMessage(message); 
+>>>>>>> refs/remotes/marianobasile/master
                             break;
 
         default: 
@@ -51,6 +67,7 @@ public class RemoteChatServiceActor extends UntypedActor {
   private void handleLoginMessage(Object message) {
           writeToLog("ok");
   }
+<<<<<<< HEAD
   
   private void handleChatMessage(Object message){
 	    
@@ -64,6 +81,9 @@ getSender().tell(toPrint, getSelf());
 		  ref.tell(toPrint, getSelf());      
   }
   
+=======
+
+>>>>>>> refs/remotes/marianobasile/master
   public static void main(String[] args) {
 
     GuiServer frame = new GuiServer();

@@ -68,6 +68,7 @@ import com.typesafe.config.ConfigFactory;
                             break;
 
                     case "ReceiveTimeout": 
+<<<<<<< HEAD
                             				//ignore
                              				break;
 
@@ -87,6 +88,36 @@ import com.typesafe.config.ConfigFactory;
                            //writeToRoom("Messaggio non riconosciuto!...");
                 }
         	}
+=======
+                            //ignore
+                             break;
+
+                    case "Reply": 
+                                    break;
+                    
+                    case: "ChatMessage":
+                                    break;
+
+                    case: "ToPrintMessage": String msgToPrint = ((Messages.ToPrintMessage)message).getContent();
+                                            writeToRoom(chat.getRoom().getText()+"\n"+msgToPrint);
+                    break;
+                            
+
+                    default: 
+                           writeToLog("Messaggio non riconosciuto!...");
+                            
+                        
+      }
+  }
+
+
+
+
+
+               
+                
+            }
+>>>>>>> refs/remotes/marianobasile/master
         };
 
     	public static void main(String[] args) {
